@@ -134,13 +134,15 @@ npm run start
 | Variable | Required | Default | Description |
 |---|:---:|---|---|
 | `DATABASE_URL` | No | `file:./dev.db` | Database connection string for Prisma SQLite dev storage |
+| `SUPABASE_URL` | No | — | Supabase project URL for production report/lead storage |
+| `SUPABASE_SERVICE_ROLE_KEY` | No | — | Supabase service role key used only on server routes |
 | `ANTHROPIC_API_KEY` | No | — | Anthropic API key for AI-powered report summaries |
 | `OPENAI_API_KEY` | No | — | OpenAI API key (fallback if Anthropic unavailable) |
 | `RESEND_API_KEY` | No | — | Resend API key for transactional emails |
 | `RESEND_FROM_EMAIL` | No | `audit@yourdomain.com` | Sender email address for outbound emails |
 | `NEXT_PUBLIC_APP_URL` | No | `http://localhost:3000` | Public URL used for share links and OG metadata |
 
-> **Note:** All AI and email features gracefully degrade when API keys are not provided. The audit engine is fully functional without any external services.
+> **Note:** Local development uses Prisma + SQLite. For deployment, create the Supabase tables from `prisma/supabase.sql` and set `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` so reports and leads persist in a managed backend.
 
 ---
 

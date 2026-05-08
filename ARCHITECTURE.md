@@ -65,7 +65,7 @@ flowchart TD
 
 5. **AI Summary** — The server attempts to generate a personalized narrative using Anthropic (preferred) → OpenAI (fallback) → deterministic template (final fallback). The prompt is constrained to 80–110 words in a CFO-friendly tone.
 
-6. **Persistence** — Reports and leads are stored through Prisma via `lib/report-store.ts`. The local dev database is SQLite, while the schema can be pointed at a managed database for production deployment.
+6. **Persistence** — Reports and leads are stored through `lib/report-store.ts`. Production can use Supabase REST when `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are configured; local development falls back to Prisma + SQLite.
 
 7. **Response** — Client receives the `StoredReport` object and redirects to `/results/[slug]`.
 
@@ -86,7 +86,7 @@ flowchart TD
 | `lib/pricing-data.ts` | Tool definitions, plan tiers, pricing, and lookup helpers for 8 AI tools | ~120 | None |
 | `lib/types.ts` | Shared TypeScript types for audit input, results, recommendations, and stored reports | ~85 | None |
 | `lib/summary.ts` | LLM summary generation with Anthropic API → OpenAI API → templated fallback chain | ~80 | Native fetch |
-| `lib/report-store.ts` | Prisma-backed CRUD for reports and leads | ~70 | @prisma/client |
+| `lib/report-store.ts` | Supabase-backed report/lead storage with Prisma SQLite fallback for local dev | ~180 | @prisma/client, native fetch |
 | `lib/email.ts` | Transactional email via Resend SDK with graceful no-op when unconfigured | ~30 | Resend SDK |
 | `lib/rate-limit.ts` | In-memory sliding-window rate limiter keyed by IP | ~25 | None |
 | `lib/prisma.ts` | Prisma client singleton (schema defined, ready for migration) | ~15 | @prisma/client |
@@ -99,25 +99,26 @@ flowchart TD
 ### Current (MVP)
 
 ```
-SQLite via Prisma
+Supabase in production; SQLite via Prisma locally
 ├── AuditReport (slug, inputJson, auditJson, summary, savings totals)
 └── Lead (email, companyName, role, teamSize, report relation)
 ```
 
-Prisma-backed store via `lib/report-store.ts`. This gives the app a real relational persistence boundary for reports and leads while keeping local setup simple.
+The active store checks for Supabase credentials first. If present, API routes persist reports and leads to Supabase using server-side REST calls. Without those credentials, local development uses Prisma + SQLite with the same record shape.
 
 ### Target (Production)
 
 ```
-Supabase Postgres (or any managed Postgres)
+Supabase Postgres
 ├── AuditReport (id, slug, createdAt, teamSize, primaryUseCase, inputJson, auditJson, summary, totalMonthlySavings, totalAnnualSavings)
 └── Lead (id, reportId, email, companyName, role, teamSize, createdAt)
 ```
 
-The same `report-store.ts` interface can be retained for production. Migration path:
-1. Switch `prisma/schema.prisma` datasource provider to `postgresql`
-2. Update `DATABASE_URL` to a managed Postgres connection string
-3. Run `npx prisma migrate deploy`
+Deployment path:
+1. Create a Supabase project
+2. Run `prisma/supabase.sql` in the Supabase SQL editor
+3. Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel
+4. Keep `DATABASE_URL=file:./dev.db` for local development
 
 ---
 
@@ -144,7 +145,7 @@ The same `report-store.ts` interface can be retained for production. Migration p
 | **Zod** | Runtime validation that mirrors TypeScript types | Joi, Yup (Zod is lighter and more TypeScript-native) |
 | **Recharts** | React-native charting, good defaults, small bundle | Chart.js (less React-idiomatic), D3 (overkill for MVP) |
 | **Vitest** | Fast, ESM-native, compatible with TypeScript without config | Jest (slower, needs more config for ESM) |
-| **Prisma + SQLite locally** | Real relational persistence with low setup friction | Supabase from day 1 (adds external dependency before validation) |
+| **Supabase optional backend** | Real managed storage in production without breaking local SQLite dev | Prisma Postgres only (harder local setup without a managed DB URL) |
 | **Resend** | Simple API, good DX, generous free tier | SendGrid (more complex setup), Postmark (similar but less modern DX) |
 
 ---
