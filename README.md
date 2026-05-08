@@ -112,7 +112,7 @@ copy .env.example .env
 
 # 4. Generate Prisma client and initialize the local SQLite database
 npx prisma generate
-sqlite3 prisma/dev.db ".read prisma/init.sql"
+npm run db:init
 
 # 5. Start the development server
 npm run dev
