@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, RotateCcw, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, ExternalLink, Loader2, RotateCcw } from "lucide-react";
 
 import { TOOL_DEFINITIONS, getPlan } from "@/lib/pricing-data";
 import type { AuditFormInput, StoredReport, ToolSpendInput, UseCase } from "@/lib/types";
@@ -26,7 +26,10 @@ function buildDefaultTools(): ToolSpendInput[] {
     toolKey: tool.key,
     enabled: tool.key === "cursor" || tool.key === "chatgpt",
     planId: tool.plans[0]?.id ?? "api",
-    monthlySpend: 0,
+    monthlySpend:
+      tool.key === "cursor" || tool.key === "chatgpt"
+        ? tool.plans[0]?.monthlySeatPrice ?? tool.plans[0]?.monthlyFlatPrice ?? 0
+        : 0,
     seats: 1,
   }));
 }
@@ -66,6 +69,17 @@ export function SpendAuditForm() {
   );
 
   const enabledCount = form.tools.filter((t) => t.enabled).length;
+
+  function baselineFor(toolIndex: number) {
+    const toolState = form.tools[toolIndex];
+    const plan = getPlan(toolState.toolKey, toolState.planId);
+
+    if (plan?.monthlySeatPrice !== undefined) {
+      return plan.monthlySeatPrice * Math.max(toolState.seats, 1);
+    }
+
+    return toolState.monthlySpend;
+  }
 
   async function submitAudit() {
     if (enabledCount === 0) {
@@ -178,13 +192,14 @@ export function SpendAuditForm() {
       <div className="mt-8 grid gap-4">
         {TOOL_DEFINITIONS.map((tool, toolIndex) => {
           const toolState = form.tools[toolIndex];
+          const baseline = baselineFor(toolIndex);
           return (
             <div
               key={tool.key}
-              className={`rounded-[28px] border p-5 transition-all duration-200 ${
+              className={`rounded-[22px] border p-5 transition-all duration-200 ${
                 toolState.enabled
-                  ? "bg-[color:var(--surface-strong)] border-[color:var(--primary)]/30"
-                  : "bg-[color:var(--surface-strong)] opacity-60"
+                  ? "border-[color:var(--primary)]/45 bg-[color:var(--surface-strong)] shadow-[0_18px_48px_-36px_rgba(37,99,235,0.8)]"
+                  : "border-[color:var(--border)] bg-[color:var(--surface)] opacity-75"
               }`}
             >
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -192,12 +207,34 @@ export function SpendAuditForm() {
                   <div className="flex items-center gap-3">
                     <h3 className="text-lg font-semibold">{tool.label}</h3>
                     <Badge variant="neutral">{tool.category}</Badge>
+                    {toolState.enabled ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--primary-foreground)] px-2.5 py-1 text-xs font-semibold text-[color:var(--primary)]">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        Selected
+                      </span>
+                    ) : (
+                      <span className="rounded-full border border-[color:var(--border)] px-2.5 py-1 text-xs font-medium text-[color:var(--muted)]">
+                        Not included
+                      </span>
+                    )}
                   </div>
-                  <p className="mt-2 text-sm text-[color:var(--muted)]">
-                    {tool.officialUrl}
-                  </p>
+                  <a
+                    className="mt-2 inline-flex items-center gap-1.5 text-sm text-[color:var(--muted)] underline-offset-4 hover:text-[color:var(--primary)] hover:underline"
+                    href={tool.officialUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Official pricing source
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
                 </div>
-                <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                <label
+                  className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium cursor-pointer ${
+                    toolState.enabled
+                      ? "border-[color:var(--primary)]/40 bg-[color:var(--primary-foreground)] text-[color:var(--primary)]"
+                      : "border-[color:var(--border)] text-[color:var(--muted)]"
+                  }`}
+                >
                   <input
                     checked={toolState.enabled}
                     type="checkbox"
@@ -211,7 +248,7 @@ export function SpendAuditForm() {
                       setForm({ ...form, tools: nextTools });
                     }}
                   />
-                  Include
+                  {toolState.enabled ? "Included in audit" : "Include in audit"}
                 </label>
               </div>
 
@@ -281,12 +318,7 @@ export function SpendAuditForm() {
               {toolState.enabled && (
                 <p className="mt-3 text-xs text-[color:var(--muted)]">
                   Baseline retail for this plan:{" "}
-                  {formatCurrency(
-                    getPlan(tool.key, toolState.planId)?.monthlySeatPrice
-                      ? (getPlan(tool.key, toolState.planId)?.monthlySeatPrice ?? 0) *
-                          Math.max(toolState.seats, 1)
-                      : toolState.monthlySpend,
-                  )}
+                  {formatCurrency(baseline)}
                 </p>
               )}
             </div>
