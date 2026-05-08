@@ -3,6 +3,7 @@
 import {
   BarChart,
   Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
@@ -36,9 +37,18 @@ export function SavingsChart({ tools }: { tools: ToolAuditResult[] }) {
   }
 
   return (
-    <div className="h-[260px] w-full">
+    <div className="h-[300px] w-full rounded-[18px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 py-4">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} barCategoryGap="20%">
+        <BarChart
+          data={data}
+          barCategoryGap="24%"
+          margin={{ top: 12, right: 18, left: 8, bottom: 8 }}
+        >
+          <CartesianGrid
+            stroke="var(--border)"
+            strokeDasharray="4 4"
+            vertical={false}
+          />
           <XAxis
             dataKey="name"
             tick={{ fill: "var(--muted)", fontSize: 12 }}
@@ -52,15 +62,20 @@ export function SavingsChart({ tools }: { tools: ToolAuditResult[] }) {
             tickFormatter={(v) => `$${v}`}
           />
           <Tooltip
+            cursor={{ fill: "rgba(56, 189, 248, 0.08)" }}
             contentStyle={{
-              background: "var(--surface-strong)",
+              background: "var(--background)",
               border: "1px solid var(--border)",
-              borderRadius: 16,
+              borderRadius: 12,
+              color: "var(--foreground)",
               fontSize: 13,
+              boxShadow: "0 18px 48px -24px rgba(0, 0, 0, 0.55)",
             }}
+            itemStyle={{ color: "var(--foreground)" }}
+            labelStyle={{ color: "var(--foreground)", fontWeight: 700 }}
             formatter={(value) => [`$${value}/mo`, "Savings"]}
           />
-          <Bar dataKey="savings" radius={[8, 8, 0, 0]}>
+          <Bar dataKey="savings" maxBarSize={92} radius={[8, 8, 0, 0]}>
             {data.map((_, index) => (
               <Cell
                 key={`cell-${index}`}

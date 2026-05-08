@@ -109,7 +109,14 @@ export function ResultsView({ report }: { report: StoredReport }) {
 
       {/* ── Savings chart ── */}
       <Card className="mt-8 p-6">
-        <h2 className="mb-4 text-xl font-semibold">Savings by tool</h2>
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-semibold">Monthly savings by tool</h2>
+            <p className="mt-1 text-sm text-[color:var(--muted)]">
+              Shows which subscriptions, downgrades, or credit routes create the projected savings.
+            </p>
+          </div>
+        </div>
         <SavingsChart tools={audit.tools} />
       </Card>
 
