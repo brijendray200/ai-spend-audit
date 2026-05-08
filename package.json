@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
+    "dev:clean": "npm run clean && next dev",
     "lint": "eslint .",
     "test": "vitest run",
     "db:init": "sqlite3 prisma/dev.db \".read prisma/init.sql\"",
