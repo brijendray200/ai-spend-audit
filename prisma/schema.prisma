@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AuditReport {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  createdAt          DateTime @default(now())
+  teamSize           Int
+  primaryUseCase     String
+  inputJson          Json
+  auditJson          Json
+  summary            String
+  totalMonthlySavings Float
+  totalAnnualSavings  Float
+  lead               Lead?
+}
+
+model Lead {
+  id          String      @id @default(cuid())
+  reportId    String      @unique
+  email       String
+  companyName String?
+  role        String?
+  teamSize    Int?
+  createdAt   DateTime    @default(now())
+  report      AuditReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,9 @@
+# Economics
+
+Assume the tool is deployed as a lead-generation product for discounted AI credits. A converted lead is worth the gross profit Credex earns when a customer buys credits through it. If a typical startup customer purchases $24,000 in annual credits and Credex captures a 12% gross margin, that lead is worth about $2,880 in gross profit before servicing cost. If only some consultations close, we should think in expected value. Suppose 20% of booked consultations convert into a purchase. Then each qualified consultation is worth about $576 in expected gross profit.
+
+Now work backward from the audit funnel. Imagine 100 completed audits in a month. If 18% of those lead to a consultation booking, that is 18 calls. At a 20% close rate, that becomes 3.6 customers, or roughly $10,368 in expected annual gross profit contribution from those 100 audits. That means even a relatively expensive acquisition channel can work if the traffic is qualified enough.
+
+For a $0 paid-budget GTM plan, CAC is mostly labor. Founder outreach and community posting might cost the equivalent of 10 hours per 100 completed audits. At an internal cost of $30/hour, that is roughly $300, or $3 per completed audit. If 18 of those 100 audits book consultations, CAC per consultation is about $16.67. If 3.6 turn into customers, CAC per customer is about $83.33, which is excellent relative to a $2,880 gross profit value.
+
+To drive $1M ARR-equivalent value in 18 months, Credex would need either more volume, better close rates, or larger account sizes. Using the same $2,880 gross profit per converted customer, the business would need about 347 converted customers over that period. If consultation-to-close remains 20% and audit-to-consultation is 18%, that means roughly 9,640 completed audits over 18 months, or about 535 per month. That is aggressive but not absurd if distribution is real and the tool becomes a category reference point for founders evaluating AI spend.
