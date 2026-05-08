@@ -16,7 +16,7 @@ export const TOOL_DEFINITIONS: ToolDefinition[] = [
       plan("hobby", "Hobby", { monthlySeatPrice: 0 }),
       plan("pro", "Pro", { monthlySeatPrice: 20 }),
       plan("business", "Business", { monthlySeatPrice: 40, minSeats: 2 }),
-      plan("enterprise", "Enterprise", { monthlySeatPrice: 60, minSeats: 10, notes: "Estimated placeholder for internal budgeting; confirm directly with sales." }),
+      plan("enterprise", "Enterprise", { monthlySeatPrice: 60, minSeats: 10, notes: "Modeled estimate for internal budgeting; confirm directly with sales." }),
     ],
   },
   {

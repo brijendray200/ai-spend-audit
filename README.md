@@ -8,9 +8,9 @@ Stackwise is a Credex-style AI spend audit tool built for startup founders, engi
 
 ## 🌐 Live Demo
 
-> Add the final deployed URL here before submission.
+> Deployment URL: add the final Vercel/Netlify/Cloudflare URL before submitting the Google Form.
 
-30-second Loom walkthrough: add the final recording link here before submission.
+30-second walkthrough: add the final Loom/YouTube link before submitting.
 
 ---
 
@@ -20,7 +20,7 @@ Stackwise is a Credex-style AI spend audit tool built for startup founders, engi
 |:---:|:---:|:---:|:---:|
 | Hero + features + FAQ | Tool cards with real-time validation | Recharts savings chart + recommendations | PII-stripped shareable report |
 
-> Add either 3+ screenshots or the Loom recording before submitting the Google Form.
+> Required before submission: add either 3+ screenshots or the walkthrough link above.
 
 ---
 
@@ -188,11 +188,6 @@ ai-spend-audit/
 ├── package.json                        # Dependencies and scripts
 ├── tsconfig.json                       # TypeScript configuration
 ├── vitest.config.ts                    # Test runner configuration
-└── docs/                               # Extended documentation
-    ├── ARCHITECTURE.md → ./ARCHITECTURE.md
-    ├── BRD.md                          # Product requirements document
-    ├── API.md                          # API reference with examples
-    └── TESTING.md                      # Test strategy and coverage
 ```
 
 ---
@@ -204,7 +199,7 @@ npm run test              # Run all 7 tests
 npm run test -- --coverage    # Run with coverage report
 ```
 
-7 test cases covering every audit engine path — see [TESTING.md](./TESTING.md) for details.
+7 test cases covering every audit engine path — see [TESTS.md](./TESTS.md) for the exact list.
 
 ---
 
@@ -238,9 +233,6 @@ npm run test -- --coverage    # Run with coverage report
 |---|---|
 | [README.md](./README.md) | Project overview, setup, and quick reference |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | System diagram, data flow, stack decisions, scaling strategy |
-| [BRD.md](./BRD.md) | Product requirements, user personas, success metrics |
-| [API.md](./API.md) | API reference with request/response examples |
-| [TESTING.md](./TESTING.md) | Test strategy, coverage, edge cases |
 | [DEVLOG.md](./DEVLOG.md) | Daily progress log with hours, learnings, and blockers |
 | [REFLECTION.md](./REFLECTION.md) | Hardest bug, reversed decisions, AI usage, self-rating |
 | [ECONOMICS.md](./ECONOMICS.md) | Unit economics and CAC analysis |
