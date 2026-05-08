@@ -59,15 +59,12 @@ export function ResultsView({ report }: { report: StoredReport }) {
         <Badge variant="primary">Audit Results</Badge>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
           {formatCurrency(audit.totalMonthlySavings)}{" "}
-          <span className="text-[color:var(--muted)]">
-            potential savings / month
-          </span>
+          <span className="text-[color:var(--muted)]">monthly savings</span>
         </h1>
         <p className="mt-3 text-base leading-7 text-[color:var(--muted)]">
-          Current stack spend is {formatCurrency(audit.totalCurrentSpend)}/mo.
-          The audit projects {formatCurrency(audit.totalAnnualSavings)} in
-          annualized savings for a {input.teamSize}-person{" "}
-          {input.primaryUseCase} team.
+          {formatCurrency(audit.totalAnnualSavings)} annualized for a{" "}
+          {input.teamSize}-person {input.primaryUseCase} team. Current stack
+          spend: {formatCurrency(audit.totalCurrentSpend)}.
         </p>
       </div>
 
@@ -88,9 +85,7 @@ export function ResultsView({ report }: { report: StoredReport }) {
           <p className="mt-2 text-3xl font-semibold text-emerald-500">
             {formatCurrency(audit.totalMonthlySavings)}
           </p>
-          <p className="mt-1 text-xs text-[color:var(--muted)]">
-            potential / month
-          </p>
+          <p className="mt-1 text-xs text-[color:var(--muted)]">identified</p>
         </Card>
         <Card className="p-6">
           <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--muted)]">
@@ -99,9 +94,7 @@ export function ResultsView({ report }: { report: StoredReport }) {
           <p className="mt-2 text-3xl font-semibold text-emerald-500">
             {formatCurrency(audit.totalAnnualSavings)}
           </p>
-          <p className="mt-1 text-xs text-[color:var(--muted)]">
-            potential / year
-          </p>
+          <p className="mt-1 text-xs text-[color:var(--muted)]">projected</p>
         </Card>
         <Card className="p-6">
           <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--muted)]">
@@ -158,7 +151,7 @@ export function ResultsView({ report }: { report: StoredReport }) {
                       {formatCurrency(tool.recommendation.monthlySavings)}
                     </p>
                     <p className="text-xs text-[color:var(--muted)]">
-                      potential / month
+                      savings / month
                     </p>
                   </div>
                 </div>

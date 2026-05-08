@@ -17,8 +17,8 @@ export async function generateMetadata({
   }
 
   return {
-    title: `$${report.audit.totalMonthlySavings.toFixed(0)}/month potential AI savings`,
-    description: `See the current spend, recommended actions, and potential savings for a ${report.input.teamSize}-person ${report.input.primaryUseCase} team.`,
+    title: `Saved $${report.audit.totalMonthlySavings.toFixed(0)}/month on AI tools`,
+    description: `See how Stackwise optimized this startup's AI stack for a ${report.input.teamSize}-person ${report.input.primaryUseCase} team.`,
   };
 }
 
