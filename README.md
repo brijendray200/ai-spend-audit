@@ -16,13 +16,23 @@ Walkthrough evidence is included below as screenshots of the core assignment flo
 
 ## 📸 Screenshots
 
-| Landing Page | Audit Form |
-|:---:|:---:|
-| ![Landing page showing the Stackwise hero and example audit outcome](./public/screenshots/landing-page.png) | ![Audit form for entering AI tool spend and seats](./public/screenshots/audit-form.png) |
+Captured from the live Vercel deployment.
 
-| Results Dashboard | Public Share |
-|:---:|:---:|
-| ![Results dashboard with monthly savings, chart, and recommendations](./public/screenshots/results-dashboard.png) | ![Public share report with PII stripped from the audit](./public/screenshots/public-share.png) |
+### Landing Page
+
+![Landing page showing the Stackwise hero and example audit outcome](./public/screenshots/landing-page.png)
+
+### Audit Form
+
+![Audit form for entering AI tool spend and seats](./public/screenshots/audit-form.png)
+
+### Results Dashboard
+
+![Results dashboard with monthly savings, chart, and recommendations](./public/screenshots/results-dashboard.png)
+
+### Public Share Page
+
+![Public share report with PII stripped from the audit](./public/screenshots/public-share.png)
 
 ---
 
