@@ -43,6 +43,18 @@ export function ResultsView({ report }: { report: StoredReport }) {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  function focusLeadCapture() {
+    const leadSection = document.getElementById("lead-capture");
+    leadSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    window.setTimeout(() => {
+      const emailInput = leadSection?.querySelector<HTMLInputElement>(
+        'input[name="email"]',
+      );
+      emailInput?.focus();
+    }, 450);
+  }
+
   const { audit, input, summary } = report;
 
   // Compute optimization score (0-100)
@@ -193,7 +205,13 @@ export function ResultsView({ report }: { report: StoredReport }) {
             optimization and discounted credits. No workflow changes needed.
           </p>
           <div className="mt-6">
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              type="button"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10"
+              onClick={focusLeadCapture}
+            >
               Talk to Credex
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -264,7 +282,7 @@ export function ResultsView({ report }: { report: StoredReport }) {
       </Card>
 
       {/* ── Lead capture ── */}
-      <div className="mt-8">
+      <div id="lead-capture" className="mt-8 scroll-mt-24">
         <LeadCapture slug={report.slug} ctaType={audit.CTAType} />
       </div>
 

@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { deflateRawSync, inflateRawSync } from "zlib";
 
 import type { AuditFormInput, AuditResult, StoredReport } from "@/lib/types";
 import { prisma } from "@/lib/prisma";
@@ -15,6 +16,8 @@ type PersistedRecord = StoredReport & {
   lead?: StoredLead;
 };
 
+const memoryReports = new Map<string, PersistedRecord>();
+
 type SupabaseAuditReportRow = {
   id: string;
   slug: string;
@@ -23,6 +26,36 @@ type SupabaseAuditReportRow = {
   auditJson: AuditResult;
   summary: string;
 };
+
+type EncodedReport = {
+  createdAt: string;
+  input: AuditFormInput;
+  audit: AuditResult;
+  summary: string;
+};
+
+function encodeFallbackReport(report: EncodedReport) {
+  return deflateRawSync(JSON.stringify(report)).toString("base64url");
+}
+
+function decodeFallbackReport(slug: string): PersistedRecord | null {
+  try {
+    const report = JSON.parse(
+      inflateRawSync(Buffer.from(slug, "base64url")).toString("utf8"),
+    ) as EncodedReport;
+
+    return {
+      slug,
+      createdAt: report.createdAt,
+      input: report.input,
+      audit: report.audit,
+      summary: report.summary,
+      leadCaptured: false,
+    };
+  } catch {
+    return null;
+  }
+}
 
 function toStoredReport(record: {
   slug: string;
@@ -57,6 +90,10 @@ function getSupabaseConfig() {
     url: url.replace(/\/$/, ""),
     key,
   };
+}
+
+function shouldUseMemoryFallback() {
+  return !getSupabaseConfig() && process.env.VERCEL === "1";
 }
 
 async function supabaseRequest<T>(path: string, init?: RequestInit) {
@@ -101,6 +138,26 @@ export async function createStoredReport(report: {
   audit: AuditResult;
   summary: string;
 }) {
+  if (shouldUseMemoryFallback()) {
+    const createdAt = new Date().toISOString();
+    const slug = encodeFallbackReport({
+      createdAt,
+      input: report.input,
+      audit: report.audit,
+      summary: report.summary,
+    });
+    const record: PersistedRecord = {
+      slug,
+      createdAt,
+      input: report.input,
+      audit: report.audit,
+      summary: report.summary,
+      leadCaptured: false,
+    };
+    memoryReports.set(slug, record);
+    return record;
+  }
+
   if (getSupabaseConfig()) {
     const rows = await supabaseRequest<SupabaseAuditReportRow[]>("AuditReport", {
       method: "POST",
@@ -139,6 +196,10 @@ export async function createStoredReport(report: {
 }
 
 export async function getStoredReport(slug: string) {
+  if (shouldUseMemoryFallback()) {
+    return memoryReports.get(slug) ?? decodeFallbackReport(slug);
+  }
+
   if (getSupabaseConfig()) {
     const rows = await supabaseRequest<SupabaseAuditReportRow[]>(
       `AuditReport?slug=eq.${encodeURIComponent(slug)}&select=*&limit=1`,
@@ -165,6 +226,25 @@ export async function captureLead(
   slug: string,
   lead: Omit<StoredLead, "createdAt">,
 ) {
+  if (shouldUseMemoryFallback()) {
+    const record = memoryReports.get(slug);
+
+    if (!record) {
+      const decoded = decodeFallbackReport(slug);
+      return decoded ? { ...decoded, leadCaptured: true } : null;
+    }
+
+    memoryReports.set(slug, {
+      ...record,
+      lead: {
+        ...lead,
+        createdAt: new Date().toISOString(),
+      },
+      leadCaptured: true,
+    });
+    return memoryReports.get(slug) ?? null;
+  }
+
   if (getSupabaseConfig()) {
     const rows = await supabaseRequest<Array<{ id: string }>>(
       `AuditReport?slug=eq.${encodeURIComponent(slug)}&select=id&limit=1`,

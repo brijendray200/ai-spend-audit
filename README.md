@@ -8,9 +8,9 @@ Stackwise is a Credex-style AI spend audit tool built for startup founders, engi
 
 ## 🌐 Live Demo
 
-> Deployment URL: add the final Vercel/Netlify/Cloudflare URL before submitting the Google Form.
+Deployment URL: https://ai-spend-audit-iota.vercel.app
 
-30-second walkthrough: add the final Loom/YouTube link before submitting.
+30-second walkthrough: add the final Loom/YouTube link before submitting, or replace this section with 3+ screenshots.
 
 ---
 
@@ -39,7 +39,7 @@ Stackwise is a Credex-style AI spend audit tool built for startup founders, engi
 | **Rate limiting** | In-memory sliding-window limiter + honeypot field for bot protection |
 | **7 unit tests** | Vitest suite covering all audit engine paths: downgrades, overspend, alternatives, credits, and CTA thresholds |
 | **GitHub Actions CI** | Automated lint + test on every push and pull request |
-| **Prisma ORM** | Schema-defined models for `AuditReport` and `Lead`, used by the active report store |
+| **Supabase/Prisma storage** | Supabase REST is used when production env vars are present; Prisma SQLite supports local development |
 
 ---
 
@@ -66,7 +66,7 @@ Landing (/) → Audit Form (/audit) → POST /api/reports → Audit Engine → R
 | **Value-first conversion** | Email capture comes after the report renders; assignment explicitly values this pattern |
 | **Honeypot + rate limiting** | Cheap, clear, and sufficient for MVP-stage abuse protection |
 | **PII-stripped share pages** | Public reports remove company and email data for safe viral sharing |
-| **Prisma-backed reports** | `AuditReport` and `Lead` models persist generated reports and captured leads |
+| **Backend-backed reports** | Supabase is the production persistence target, with a Prisma SQLite path for local development |
 
 ---
 

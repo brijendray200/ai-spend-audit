@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -24,6 +25,7 @@ const COLORS = [
 ];
 
 export function SavingsChart({ tools }: { tools: ToolAuditResult[] }) {
+  const [mounted, setMounted] = useState(false);
   const data = tools
     .filter((t) => t.recommendation.monthlySavings > 0)
     .map((t) => ({
@@ -32,13 +34,23 @@ export function SavingsChart({ tools }: { tools: ToolAuditResult[] }) {
       current: t.currentSpend,
     }));
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (data.length === 0) {
     return null;
   }
 
+  if (!mounted) {
+    return (
+      <div className="h-[300px] min-w-0 w-full rounded-[18px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 py-4" />
+    );
+  }
+
   return (
-    <div className="h-[300px] w-full rounded-[18px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 py-4">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="h-[300px] min-w-0 w-full rounded-[18px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 py-4">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <BarChart
           data={data}
           barCategoryGap="24%"

@@ -13,44 +13,77 @@ type LeadCaptureProps = {
   onCaptured?: () => void;
 };
 
+type LeadSubmitResult =
+  | { ok: true }
+  | {
+      ok: false;
+      message: string;
+    };
+
 export function LeadCapture({ slug, ctaType, onCaptured }: LeadCaptureProps) {
   const [loading, setLoading] = useState(false);
   const [captured, setCaptured] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function submitLead(formData: FormData): Promise<LeadSubmitResult> {
+    try {
+      const payload = {
+        email: String(formData.get("email") ?? ""),
+        companyName: String(formData.get("companyName") ?? ""),
+        role: String(formData.get("role") ?? ""),
+        teamSize: Number(formData.get("leadTeamSize") ?? 0),
+        website: String(formData.get("website") ?? ""),
+      };
+
+      const response = await fetch(
+        new URL(`/api/reports/${slug}/lead`, window.location.origin),
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || data.error) {
+        return {
+          ok: false,
+          message: data.error ?? "Unable to save your email.",
+        };
+      }
+
+      return { ok: true };
+    } catch {
+      return {
+        ok: false,
+        message:
+          "Could not reach the server. Please refresh the page and try again.",
+      };
+    }
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setMessage(null);
 
     const formData = new FormData(event.currentTarget);
-    const payload = {
-      email: String(formData.get("email") ?? ""),
-      companyName: String(formData.get("companyName") ?? ""),
-      role: String(formData.get("role") ?? ""),
-      teamSize: Number(formData.get("leadTeamSize") ?? 0),
-      website: String(formData.get("website") ?? ""),
-    };
 
-    try {
-      const response = await fetch(`/api/reports/${slug}/lead`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = (await response.json()) as { ok?: boolean; error?: string };
-
-      if (!response.ok || data.error) {
-        setMessage(data.error ?? "Unable to save your email.");
+    void submitLead(formData).then((result) => {
+      if (!result.ok) {
+        setMessage(result.message);
+        setLoading(false);
         return;
       }
 
       setCaptured(true);
       setMessage("Email captured. A confirmation note has been queued.");
       onCaptured?.();
-    } finally {
       setLoading(false);
-    }
+    });
   }
 
   return (
