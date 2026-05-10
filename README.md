@@ -10,17 +10,19 @@ Stackwise is a Credex-style AI spend audit tool built for startup founders, engi
 
 Deployment URL: https://ai-spend-audit-iota.vercel.app
 
-30-second walkthrough: add the final Loom/YouTube link before submitting, or replace this section with 3+ screenshots.
+Walkthrough evidence is included below as screenshots of the core assignment flow.
 
 ---
 
 ## 📸 Screenshots
 
-| Landing Page | Audit Form | Results Dashboard | Public Share |
-|:---:|:---:|:---:|:---:|
-| Hero + features + FAQ | Tool cards with real-time validation | Recharts savings chart + recommendations | PII-stripped shareable report |
+| Landing Page | Audit Form |
+|:---:|:---:|
+| ![Landing page showing the Stackwise hero and example audit outcome](./public/screenshots/landing-page.png) | ![Audit form for entering AI tool spend and seats](./public/screenshots/audit-form.png) |
 
-> Required before submission: add either 3+ screenshots or the walkthrough link above.
+| Results Dashboard | Public Share |
+|:---:|:---:|
+| ![Results dashboard with monthly savings, chart, and recommendations](./public/screenshots/results-dashboard.png) | ![Public share report with PII stripped from the audit](./public/screenshots/public-share.png) |
 
 ---
 
@@ -134,15 +136,28 @@ npm run start
 | Variable | Required | Default | Description |
 |---|:---:|---|---|
 | `DATABASE_URL` | No | `file:./dev.db` | Database connection string for Prisma SQLite dev storage |
-| `SUPABASE_URL` | No | — | Supabase project URL for production report/lead storage |
-| `SUPABASE_SERVICE_ROLE_KEY` | No | — | Supabase service role key used only on server routes |
+| `SUPABASE_URL` | Production | — | Supabase project URL for production report/lead storage |
+| `SUPABASE_SERVICE_ROLE_KEY` | Production | — | Supabase service role key used only on server routes |
 | `ANTHROPIC_API_KEY` | No | — | Anthropic API key for AI-powered report summaries |
 | `OPENAI_API_KEY` | No | — | OpenAI API key (fallback if Anthropic unavailable) |
-| `RESEND_API_KEY` | No | — | Resend API key for transactional emails |
-| `RESEND_FROM_EMAIL` | No | `audit@yourdomain.com` | Sender email address for outbound emails |
+| `RESEND_API_KEY` | Production | — | Resend API key for transactional emails |
+| `RESEND_FROM_EMAIL` | Production | `audit@yourdomain.com` | Sender email address for outbound emails |
 | `NEXT_PUBLIC_APP_URL` | No | `http://localhost:3000` | Public URL used for share links and OG metadata |
 
 > **Note:** Local development uses Prisma + SQLite. For deployment, create the Supabase tables from `prisma/supabase.sql` and set `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` so reports and leads persist in a managed backend.
+
+### Production Backend Setup
+
+Run `prisma/supabase.sql` in the Supabase SQL editor, then set these Vercel production environment variables before redeploying:
+
+```bash
+vercel env add SUPABASE_URL production
+vercel env add SUPABASE_SERVICE_ROLE_KEY production
+vercel env add RESEND_API_KEY production
+vercel env add RESEND_FROM_EMAIL production
+vercel env add NEXT_PUBLIC_APP_URL production
+vercel --prod
+```
 
 ---
 

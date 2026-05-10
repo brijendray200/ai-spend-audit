@@ -48,9 +48,14 @@ export default async function Image({
           </div>
           <div style={{ fontSize: 24 }}>credex-style savings snapshot</div>
         </div>
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <div style={{ fontSize: 84, fontWeight: 700 }}>
-            ${Math.round(audit?.totalMonthlySavings ?? 0)}/mo savings
+            {`$${Math.round(audit?.totalMonthlySavings ?? 0)}/mo savings`}
           </div>
           <div style={{ marginTop: 20, fontSize: 34, maxWidth: 900 }}>
             {input
@@ -61,23 +66,25 @@ export default async function Image({
         <div style={{ display: "flex", gap: 24 }}>
           <div
             style={{
+              display: "flex",
               border: "1px solid rgba(255,255,255,0.15)",
               borderRadius: 24,
               padding: "24px 28px",
               fontSize: 28,
             }}
           >
-            Current spend: ${Math.round(audit?.totalCurrentSpend ?? 0)}
+            {`Current spend: $${Math.round(audit?.totalCurrentSpend ?? 0)}`}
           </div>
           <div
             style={{
+              display: "flex",
               border: "1px solid rgba(255,255,255,0.15)",
               borderRadius: 24,
               padding: "24px 28px",
               fontSize: 28,
             }}
           >
-            Annualized savings: ${Math.round(audit?.totalAnnualSavings ?? 0)}
+            {`Annualized savings: $${Math.round(audit?.totalAnnualSavings ?? 0)}`}
           </div>
         </div>
       </div>
